@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning Poker - Real-time Estimation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen active">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="logo">🎰</div>
+                    <h1>Planning Poker</h1>
+                    <p class="subtitle">Real-time Team Estimation</p>
+
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="form-layout">
+                            <!-- Left Column: Room and Name -->
+                            <div class="form-left">
+                                <!-- Display Name Section -->
+                                <div class="form-section">
+                                    <h3>Your Name <span class="required">*</span></h3>
+                                    <p class="section-subtitle">How others see you</p>
+                                    <div class="form-group">
+                                        <input 
+                                            type="text" 
+                                            id="nameInput" 
+                                            placeholder="Enter your name" 
+                                            required
+                                        >
+                                    </div>
+                                </div>
+
+                                <!-- Room ID Section -->
+                                <div class="form-section">
+                                    <h3>Room ID</h3>
+                                    <p class="section-subtitle">Leave empty for auto-generate</p>
+                                    <div class="form-group">
+                                        <input 
+                                            type="text" 
+                                            id="roomInput" 
+                                            placeholder="Optional" 
+                                            maxlength="20"
+                                        >
+                                    </div>
+                                </div>
+
+                                <!-- Voting System Section -->
+                                <div class="form-section">
+                                    <h3>Voting System</h3>
+                                    <p class="section-subtitle">Select estimation scale</p>
+                                    <div class="form-group">
+                                        <select id="votingSystemInput" class="form-select">
+                                            <option value="fibonacci">Fibonacci ( 0, 1, 2, 3, 5, 8, 13, 21, ☕ )</option>
+                                            <option value="modified">Modified Fibonacci ( 0, 1/2, 1, 2, 3, 5, 8, 13, 20, 40, 100, ☕ )</option>
+                                            <option value="tshirt">T-Shirts ( xxs, xs, s, m, l, xl, xxl, ☕ )</option>
+                                            <option value="powers">Power of Two ( 0, 1, 2, 4, 8, 16, 32, ☕ )</option>
+                                            <option value="health">Health ( 😄, 😕, 😐, 😟, 😞, 😭, 😠, 🤯, ☕ )</option>
+                                            <option value="traffic">Traffic Lights ( 🔴, 🟡, 🟢, ☕ )</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Avatar Selection -->
+                            <div class="form-right">
+                                <div class="avatar-section">
+                                    <div class="section-header">
+                                        <h3>Avatar</h3>
+                                    </div>
+
+                                    <!-- Avatar Preview -->
+                                    <div class="avatar-preview">
+                                        <div id="avatarPreview" class="avatar-display">
+                                            😊
+                                        </div>
+                                    </div>
+
+                                    <!-- Avatar Tabs -->
+                                    <div class="avatar-tabs">
+                                        <button type="button" class="tab-btn active" onclick="switchAvatarTab('male')">👨</button>
+                                        <button type="button" class="tab-btn" onclick="switchAvatarTab('neutral')">🧑</button>
+                                        <button type="button" class="tab-btn" onclick="switchAvatarTab('female')">👩</button>
+                                    </div>
+
+                                    <!-- Avatar Gallery -->
+                                    <div class="avatar-gallery" id="avatarGallery">
+                                        <!-- Populated by JavaScript -->
+                                    </div>
+
+                                    <!-- Avatar Actions -->
+                                    <div class="avatar-actions">
+                                        <button type="button" class="btn-action-small" onclick="shuffleAvatar()" title="Random avatar">
+                                            ↻
+                                        </button>
+                                    </div>
+
+                                    <input type="hidden" id="selectedAvatar" value="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-join">Join Room</button>
+                    </form>
+
+                    <p class="hint">💡 Share your Room ID with teammates to join the same estimation session</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Room Screen -->
+        <div id="roomScreen" class="screen">
+            <header class="header">
+                <div class="header-left">
+                    <h1>Planning Poker</h1>
+                    <p id="roomLabel" class="room-id">Room: <span id="roomId">-</span></p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info-container">
+                        <span class="user-icon" title="Logged in user">👤</span>
+                        <div class="user-tooltip" id="userTooltip">-</div>
+                    </div>
+                    <button class="btn btn-invite" onclick="openInviteModal()">👥 Invite Others</button>
+                    
+                    <!-- Theme Switcher -->
+                    <div class="theme-switcher">
+                        <button class="theme-btn" id="themeToggle" title="Change theme">🎨</button>
+                        <div class="theme-menu" id="themeMenu" style="display: none;">
+                            <button class="theme-option" onclick="applyTheme('purple')" style="background-color: #7c3aed;" title="Purple Theme">Purple</button>
+                            <button class="theme-option" onclick="applyTheme('yellow')" style="background-color: #fbbf24;" title="Yellow Theme">Yellow</button>
+                            <button class="theme-option" onclick="applyTheme('red')" style="background-color: #ef4444;" title="Red Theme">Red</button>
+                            <button class="theme-option" onclick="applyTheme('dark')" style="background-color: #1f2937;" title="Dark Theme">Dark</button>
+                        </div>
+                    </div>
+                    
+                    <button id="leaveBtn" class="btn btn-outline" onclick="handleLeave()">Leave</button>
+                </div>
+            </header>
+
+            <div class="main-content">
+                <!-- Left Sidebar - Users -->
+                <aside class="sidebar">
+                    <div class="sidebar-section">
+                        <h3>Waiting</h3>
+                        <div id="waitingList" class="user-list">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Voted</h3>
+                        <div id="votedList" class="user-list">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Center Content -->
+                <main class="center-content">
+                    <!-- Reveal Votes Section -->
+                    <div id="revealSection" class="reveal-section" style="display: none;">
+                        <button class="btn btn-reveal" onclick="handleReveal()">
+                            👁️ Reveal Votes
+                        </button>
+                    </div>
+
+                    <!-- Voting Avatars Section -->
+                    <div class="votes-display" id="votesDisplay">
+                        <!-- Dynamically populated with voting avatars -->
+                    </div>
+
+                    <!-- Voting Cards Section -->
+                    <div class="voting-section">
+                        <h3>Choose your card</h3>
+                        <div class="voting-cards" id="votingCards">
+                            <!-- Dynamically populated based on voting system -->
+                        </div>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <div id="resetSection" class="reset-section" style="display: none;">
+                        <button class="btn btn-secondary" onclick="handleReset()">
+                            ↻ Start New Round
+                        </button>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+        </div>
+
+        <!-- Invite Modal -->
+        <div id="inviteModal" class="modal" style="display: none;">
+            <div class="modal-overlay" onclick="closeInviteModal()"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Invite Your Team</h2>
+                    <button class="modal-close" onclick="closeInviteModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-subtitle">Share this link or QR code with your team to get started!</p>
+                    
+                    <div class="invite-container">
+                        <div class="invite-link-section">
+                            <input type="text" id="inviteLink" class="invite-link-input" readonly disabled>
+                            <button class="btn btn-primary" onclick="copyInviteLink()">📋 Copy URL</button>
+                        </div>
+                        
+                        <div class="invite-qr-section">
+                            <div id="qrCode" class="qr-placeholder">🔗 QR</div>
+                            <button class="btn btn-secondary" onclick="downloadQRCode()">⬇️ Download QR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="{{ url_for('static', filename='client.js') }}"></script>
+</body>
+</html>
