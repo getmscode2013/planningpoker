@@ -167,7 +167,6 @@ function handleLogin(event) {
     setTimeout(() => {
         document.getElementById('loginScreen').classList.remove('active');
         document.getElementById('roomScreen').classList.add('active');
-        document.getElementById('userNameDisplay').textContent = nameInput;
         document.getElementById('userTooltip').textContent = nameInput;
         document.getElementById('roomId').textContent = roomInput;
         renderVotingCards(votingSystem);
@@ -566,7 +565,6 @@ function restoreSession() {
             setTimeout(() => {
                 document.getElementById('loginScreen').classList.remove('active');
                 document.getElementById('roomScreen').classList.add('active');
-                document.getElementById('userNameDisplay').textContent = session.name;
                 document.getElementById('userTooltip').textContent = session.name;
                 document.getElementById('roomId').textContent = session.room;
                 renderVotingCards(session.votingSystem);

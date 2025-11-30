@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planning Poker - Real-time Estimation</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Favicon with emoji -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🎰</text></svg>">
 </head>
 <body>
     <div id="app">
@@ -123,7 +121,6 @@
                 <div class="header-right">
                     <div class="user-info-container">
                         <span class="user-icon" title="Logged in user">👤</span>
-                        <span class="user-name-display" id="userNameDisplay">-</span>
                         <div class="user-tooltip" id="userTooltip">-</div>
                     </div>
                     <button class="btn btn-invite" onclick="openInviteModal()">👥 Invite Others</button>
