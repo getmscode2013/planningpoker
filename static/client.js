@@ -1,5 +1,5 @@
 /* ========================================
-   Planning Poker - Client JavaScript
+   Fast Point - Client JavaScript
    ======================================== */
 
 let socket;

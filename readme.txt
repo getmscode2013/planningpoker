@@ -1,6 +1,6 @@
-Planning Poker (a.k.a. Scrum Poker) is a collaborative estimation technique used by Agile teams—especially in Scrum—to estimate the effort, complexity, or size of user stories.
+Fast Point (a.k.a. Scrum Poker) is a collaborative estimation technique used by Agile teams—especially in Scrum—to estimate the effort, complexity, or size of user stories.
 
-How Planning Poker Works
+How Fast Point Works
 
 Select a story
 The Product Owner briefly explains a user story and its acceptance criteria.
@@ -26,7 +26,7 @@ low estimators explain why they think it’s simpler
 Revote
 After the discussion, the team votes again until convergence (consensus or near-consensus) is reached.
 
-Why Planning Poker is Useful
+Why Fast Point is Useful
 
 Reduces cognitive bias by having simultaneous votes
 

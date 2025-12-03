@@ -1,5 +1,5 @@
 """
-Planning Poker Application - Backend
+Fast Point Application - Backend
 Real-time voting system for agile estimation using Flask and Socket.IO
 """
 
@@ -19,7 +19,7 @@ user_sessions = {}
 
 
 class Room:
-    """Represents a planning poker room"""
+    """Represents a Fast Point room"""
 
     def __init__(self, room_id):
         self.id = room_id

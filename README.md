@@ -1,6 +1,6 @@
 # Planning Poker - Real-time Team Estimation Tool
 
-A modern, real-time planning poker application built with Flask and Socket.IO. Enables agile teams to estimate user stories in real-time with a clean, intuitive interface.
+A modern, real-time Fast Point application built with Flask and Socket.IO. Enables agile teams to estimate user stories in real-time with a clean, intuitive interface.
 
 ## Features
 
